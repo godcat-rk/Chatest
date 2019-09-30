@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Chatestのページ</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <style>
+      ul {width: 400px; height: 400px; background-color: rgb(253, 255, 228); border: 1px black solid;};
+    </style>
+  </head>
+  <body>
+    <h1>チャッテストのページ</h1>
+    <form  action="" id="message_form">
+      <input type="text" id="input_msg"><button>送信</button>
+    </form>
+    <ul id="messages"></ul>
+
+    <script>
+      var socketio = io();
+      $(function(){
+        $("#message_form").submit(() =>{
+          socketio.emit("message",$("#input_msg").val());
+          $("input_msg").val('');
+          return false;
+        });
+        socketio.on("message", (msg) => {
+          $('#messages').append($('<p>').text(msg));
+        });
+        socketio.on("connect", () => {
+          socketio.emit("setUserName", prompt("名前を入力してください"));
+        })
+      });
+    </script>
+  </body>
+</html>
